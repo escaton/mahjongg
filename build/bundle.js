@@ -9388,6 +9388,8 @@
 	        this.tilesCount = _tilesPack.tiles.length;
 	
 	        this.$board = $('#board');
+	        this.$undo = $('#undo');
+	        this.$search = $('#search');
 	        this.$centerOfBoard = $('#center');
 	
 	        this._prepareBoard();
@@ -9549,6 +9551,14 @@
 	                }
 	            });
 	
+	            this.$undo.on('click', function () {
+	                undo();
+	            });
+	
+	            this.$search.on('click', function () {
+	                searchPair();
+	            });
+	
 	            this.$board.on('click', function (event) {
 	                var $targetContainer = $(event.target).parent();
 	
@@ -9673,6 +9683,22 @@
 	            function clearSelection() {
 	                $selectedTile = null;
 	                $selectionFrame.remove();
+	            }
+	
+	            function searchPair() {
+	                var $tiles = self.$board.find('div.tile');
+	                var $tilesArray = $tiles.toArray();
+	
+	                for (var i = 0; i < $tilesArray.length; i++) {
+	                    for (var j = i + 1; j < $tilesArray.length; j++) {
+	                        if (isAvailableTile($($tilesArray[i])) && isAvailableTile($($tilesArray[j])) && isTilesEqual($($tilesArray[i]), $($tilesArray[j]))) {
+	                            $selectedTile = $($tilesArray[j]);
+	                            addSelection($selectedTile);
+	                            return;
+	                        }
+	                    }
+	                }
+	                alert('No pairs found');
 	            }
 	        }
 	    }]);

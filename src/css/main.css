@@ -108,3 +108,21 @@ and (min-height: 1024px) {
     bottom: 0.9vh;
     border: 3px solid blue;
 }
+
+.ui-button {
+    all: unset;
+    position: absolute;
+    z-index: 1;
+    font-size: 40px;
+    cursor: pointer;
+}
+
+#undo {
+    top: 20px;
+    right: 20px;
+}
+
+#search {
+    bottom: 20px;
+    right: 20px;
+}

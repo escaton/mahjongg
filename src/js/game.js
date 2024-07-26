@@ -7,6 +7,8 @@ export class Game {
         this.tilesCount = tiles.length;
 
         this.$board = $('#board');
+        this.$undo = $('#undo');
+        this.$search = $('#search');
         this.$centerOfBoard = $('#center');
 
         this._prepareBoard();
@@ -111,6 +113,14 @@ export class Game {
                 event.preventDefault();
                 event.stopPropagation();
             }
+        });
+
+        this.$undo.on('click', function () {
+            undo()
+        });
+
+        this.$search.on('click', function () {
+            searchPair();
         });
 
         this.$board.on('click', function (event) {
@@ -237,6 +247,26 @@ export class Game {
         function clearSelection() {
             $selectedTile = null;
             $selectionFrame.remove();
+        }
+
+        function searchPair() {
+            const $tiles = self.$board.find('div.tile');
+            const $tilesArray = $tiles.toArray();
+
+            for (let i = 0; i < $tilesArray.length; i++) {
+                for (let j = i + 1; j < $tilesArray.length; j++) {
+                    if (
+                        isAvailableTile($($tilesArray[i])) &&
+                        isAvailableTile($($tilesArray[j])) &&
+                        isTilesEqual($($tilesArray[i]), $($tilesArray[j]))
+                    ) {
+                        $selectedTile = $($tilesArray[j]);
+                        addSelection($selectedTile);
+                        return;
+                    }
+                }
+            }
+            alert('No pairs found');
         }
     }
 }
