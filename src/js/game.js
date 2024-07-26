@@ -105,6 +105,14 @@ export class Game {
         let $selectionFrame = $('<div></div>', {class: 'frame'});
         let coords = { clientX: undefined, clientY: undefined };
 
+        $(window).on('keydown', function (event) {
+            if (event.metaKey && event.key === 'z') {
+                undo()
+                event.preventDefault();
+                event.stopPropagation();
+            }
+        });
+
         this.$board.on('click', function (event) {
             let $targetContainer = $(event.target).parent();
 
@@ -155,11 +163,31 @@ export class Game {
             }
         });
 
+        const turns = []
+
         function removeTiles($selectedTile, $targetTile) {
+            const turn = []
+            clearSelection();
             $.each(arguments, function(index, $tile) {
+                turn.push({
+                    parent: $tile.parent(),
+                    index: $tile.index(),
+                    tile: $tile.clone(true, true)
+                })
                 $tile.removeClass('tile').children().remove();
                 --self.tilesCount;
             });
+            turns.push(turn)
+        }
+
+        function undo() {
+            const turn = turns.pop()
+            if (turn) {
+                $.each(turn, function(_, {parent, index, tile}) {
+                    parent.children().eq(index).replaceWith(tile)
+                    ++self.tilesCount;
+                })
+            }
         }
 
         function isTilesEqual($selectedTile, $targetTile) {
