@@ -1,36 +1,30 @@
 var path = require('path');
-var ExtractTextPlugin = require('extract-text-webpack-plugin');
-var WebpackCleanupPlugin = require('webpack-cleanup-plugin');
-var WebpackBrowserPlugin = require('webpack-browser-plugin');
 
 module.exports = {
-    entry: ['babel-polyfill', './main.js'],
+    mode: process.env.NODE_ENV === 'production' ? 'production' : 'development',
+    entry: ['@babel/polyfill', './main.js'],
     output: {
-        path: 'build',
-        filename: 'bundle.js'
+        path: path.join(__dirname, 'build'),
+        filename: 'bundle.js',
     },
     devServer: {
-        inline: true
+        host: '0.0.0.0',
+        devMiddleware: {
+            writeToDisk: true,
+        },
+        static: {
+            directory: __dirname,
+        },
     },
     module: {
-        loaders: [
-            { test: /\.js$/, exclude: /node_modules/, loader: "babel" },
+        rules: [
+            { test: /\.js$/, exclude: /node_modules/, use: 'babel-loader' },
             {
                 test: /\.css$/,
-                loader: ExtractTextPlugin.extract("style", "css")
+                use: ['style-loader', 'css-loader'],
             },
-            {
-                test: /\.html$/,
-                loader: 'html?name=[name].[ext]',
-            },
-            { test: /\.(jpg|gif)$/, loader: "file?name=css/[name].[ext]" }
-        ]
+            { test: /\.(jpg|gif)$/, type: 'asset/resource' },
+        ],
     },
-    plugins: [
-        new WebpackBrowserPlugin(),
-        new ExtractTextPlugin("css/bundle.css"),
-        new WebpackCleanupPlugin({quiet: true}),
-    ],
     devtool: 'source-map',
-    watch: true
 };

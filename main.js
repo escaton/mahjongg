@@ -1,3 +1,4 @@
+import './src/css/main.css';
 import { Game } from './src/js/game';
 
 $(initGame);
