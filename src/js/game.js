@@ -213,35 +213,45 @@ export class Game {
 
             let $parent = $target.parent();
             let $tilesSet = $target.parents('.tileset');
+            let tileSetIndex = $tilesSet.index();
+            let rowIndex = $parent.index();
+            let tileIndex = $target.index();
 
-            // Click outside tiles
-            if (!$tilesSet) return;
+            // has upper tile
+            let upperTile = 0
+            if (tileSetIndex === 0 && rowIndex > 0 && rowIndex < 7 && tileIndex > 2 && tileIndex < 9) {
+                upperTile = $('.tileset').eq(1).find('.tiles-row').eq(rowIndex - 1).find('.tile').eq(tileIndex - 3).length;
+            } else if (tileSetIndex === 1 && rowIndex > 0 && rowIndex < 5 && tileIndex > 1 && tileIndex < 5) {
+                upperTile = $('.tileset').eq(2).find('.tiles-row').eq(rowIndex - 1).find('.tile').eq(tileIndex - 1).length;
+            } else if (tileSetIndex === 2 && rowIndex > 0 && rowIndex < 4 && tileIndex > 1 && tileIndex < 4) {
+                upperTile = $('.tileset').eq(3).find('.tiles-row').eq(rowIndex - 1).find('.tile').eq(tileIndex - 1).length;
+            } else if (tileSetIndex === 3) {
+                upperTile = $('.tileset').eq(4).find('div.tile').length;
+            }
 
-            let isSecondLayerBlockedByFirst = $tilesSet.index() === 3 && $('.tileset').eq(4).find('div.tile').length;
-
-            if (isSecondLayerBlockedByFirst) return;
+            if (upperTile) return;
 
             let $firstAvailableTile = $parent.find('div.tile:first');
             let $lastAvailableTile = $parent.find('div.tile:last');
 
-            let rowNumber = $parent.index();
+            // closed central rows
             let closedRowsNumbers = [3, 4];
 
             let isLeftPartHasTile = $('#left').find('div.tile').length;
             let isRightPartHasTile = $('#right').find('div.tile').length;
 
-            let isUndermostTileset = $tilesSet.index() === 0;
+            let isUndermostTileset = tileSetIndex === 0;
             let isCentralRowNotAvailable = (isLeftPartHasTile && $target.is($firstAvailableTile)) || (isRightPartHasTile && $target.is($lastAvailableTile));
             let isFirstElementOfRightRowNotAvailable = $target.parents('#right').length && $target.siblings('.tile').length && $target.is($firstAvailableTile);
 
-            if (isUndermostTileset && isCentralRowNotAvailable && ~$.inArray(rowNumber, closedRowsNumbers)) return;
+            if (isUndermostTileset && isCentralRowNotAvailable && ~$.inArray(rowIndex, closedRowsNumbers)) return;
             if (isFirstElementOfRightRowNotAvailable) return;
 
             return ($target.is($firstAvailableTile) || $target.is($lastAvailableTile));
         }
 
         function addSelection() {
-            $selectedTile.append($selectionFrame);
+            $selectedTile.prepend($selectionFrame);
         }
 
         function clearSelection() {
@@ -256,9 +266,9 @@ export class Game {
             for (let i = 0; i < $tilesArray.length; i++) {
                 for (let j = i + 1; j < $tilesArray.length; j++) {
                     if (
+                        isTilesEqual($($tilesArray[i]), $($tilesArray[j])) &&
                         isAvailableTile($($tilesArray[i])) &&
-                        isAvailableTile($($tilesArray[j])) &&
-                        isTilesEqual($($tilesArray[i]), $($tilesArray[j]))
+                        isAvailableTile($($tilesArray[j]))
                     ) {
                         $selectedTile = $($tilesArray[j]);
                         addSelection($selectedTile);
