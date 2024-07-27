@@ -218,15 +218,15 @@ export class Game {
             let tileIndex = $target.index();
 
             // has upper tile
-            let upperTile = 0
+            let upperTile = false
             if (tileSetIndex === 0 && rowIndex > 0 && rowIndex < 7 && tileIndex > 2 && tileIndex < 9) {
-                upperTile = $('.tileset').eq(1).find('.tiles-row').eq(rowIndex - 1).find('.tile').eq(tileIndex - 3).length;
+                upperTile = $('.tileset').eq(1).find('.tiles-row').eq(rowIndex - 1).find('.cell').eq(tileIndex - 3).is('.tile');
             } else if (tileSetIndex === 1 && rowIndex > 0 && rowIndex < 5 && tileIndex > 1 && tileIndex < 5) {
-                upperTile = $('.tileset').eq(2).find('.tiles-row').eq(rowIndex - 1).find('.tile').eq(tileIndex - 1).length;
+                upperTile = $('.tileset').eq(2).find('.tiles-row').eq(rowIndex - 1).find('.cell').eq(tileIndex - 1).is('.tile');
             } else if (tileSetIndex === 2 && rowIndex > 0 && rowIndex < 4 && tileIndex > 1 && tileIndex < 4) {
-                upperTile = $('.tileset').eq(3).find('.tiles-row').eq(rowIndex - 1).find('.tile').eq(tileIndex - 1).length;
+                upperTile = $('.tileset').eq(3).find('.tiles-row').eq(rowIndex - 1).find('.cell').eq(tileIndex - 1).is('.tile');
             } else if (tileSetIndex === 3) {
-                upperTile = $('.tileset').eq(4).find('div.tile').length;
+                upperTile = $('.tileset').eq(4).find('div.tile').length > 0;
             }
 
             if (upperTile) return;
