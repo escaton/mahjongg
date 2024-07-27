@@ -259,24 +259,31 @@ export class Game {
             $selectionFrame.remove();
         }
 
+        let lastFound = 0
         function searchPair() {
             const $tiles = self.$board.find('div.tile');
             const $tilesArray = $tiles.toArray();
 
-            for (let i = 0; i < $tilesArray.length; i++) {
+            for (let i = lastFound; i < $tilesArray.length; i++) {
                 for (let j = i + 1; j < $tilesArray.length; j++) {
                     if (
                         isTilesEqual($($tilesArray[i]), $($tilesArray[j])) &&
                         isAvailableTile($($tilesArray[i])) &&
                         isAvailableTile($($tilesArray[j]))
                     ) {
+                        lastFound = i;
                         $selectedTile = $($tilesArray[j]);
                         addSelection($selectedTile);
                         return;
                     }
                 }
             }
-            alert('No pairs found');
+            if (lastFound === 0) {
+                alert('No pairs found');
+            } else {
+                lastFound = 0;
+                searchPair();
+            }
         }
     }
 }
