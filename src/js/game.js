@@ -264,7 +264,7 @@ export class Game {
             const $tiles = self.$board.find('div.tile');
             const $tilesArray = $tiles.toArray();
 
-            for (let i = lastFound; i < $tilesArray.length; i++) {
+            for (let i = lastFound + 1; i < $tilesArray.length; i++) {
                 for (let j = i + 1; j < $tilesArray.length; j++) {
                     if (
                         isTilesEqual($($tilesArray[i]), $($tilesArray[j])) &&
@@ -272,6 +272,7 @@ export class Game {
                         isAvailableTile($($tilesArray[j]))
                     ) {
                         lastFound = i;
+                        clearSelection();
                         $selectedTile = $($tilesArray[j]);
                         addSelection($selectedTile);
                         return;
